@@ -13,8 +13,10 @@ app.use(middlewareLogResponses);
 app.use(express.json());
 app.use("/app", middlewareMetricsInc);
 app.use("/app", express.static("./src/app"));
+
 app.get("/admin/metrics", handlerGetMetrics);
 app.get("/admin/reset", handlerResetMetrics);
+
 app.get("/api/healthz", handlerReadiness);
 app.post("/api/validate_chirp", (req, res, next) => {
   Promise.resolve(handlerValidateChirp(req, res)).catch(next);
