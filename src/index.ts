@@ -1,9 +1,12 @@
 import express from "express";
+import { middlewareLogResponses } from "./middleware/logger.js";
 import { middlewareMetricsInc } from "./middleware/metrics.js";
 import { handlerReadiness } from "./api/readiness.js";
 import { handlerGetMetrics, handlerResetMetrics } from "./api/metrics.js";
 const app = express();
 const PORT = 8080;
+
+app.use(middlewareLogResponses);
 app.use("/app", middlewareMetricsInc);
 app.use("/app", express.static("./src/app"));
 app.get("/admin/metrics", handlerGetMetrics);
