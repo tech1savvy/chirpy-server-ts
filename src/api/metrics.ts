@@ -12,8 +12,3 @@ export function handlerGetMetrics(_req: Request, res: Response) {
 </html>
 `);
 }
-
-export function handlerResetMetrics(_req: Request, res: Response) {
-  config.api.fileServerHits = 0;
-  res.send();
-}
