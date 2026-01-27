@@ -9,6 +9,7 @@ import { middlewareErrorHandler } from "./middleware/error.js";
 import { handlerReadiness } from "./api/readiness.js";
 import { handlerGetMetrics, handlerResetMetrics } from "./api/metrics.js";
 import { handlerValidateChirp } from "./api/chirp.js";
+import { handlerUsersCreate as handlerUsersCreate } from "./api/users.js";
 
 import { config } from "./config.js";
 
@@ -28,6 +29,10 @@ app.get("/admin/reset", handlerResetMetrics);
 app.get("/api/healthz", handlerReadiness);
 app.post("/api/validate_chirp", (req, res, next) => {
   Promise.resolve(handlerValidateChirp(req, res)).catch(next);
+});
+
+app.post("/api/users", (req, res, next) => {
+  Promise.resolve(handlerUsersCreate(req, res)).catch(next);
 });
 
 app.use(middlewareErrorHandler);
