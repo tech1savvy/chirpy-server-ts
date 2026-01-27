@@ -7,13 +7,13 @@ export function handlerGetMetrics(_req: Request, res: Response) {
 <html>
   <body>
     <h1>Welcome, Chirpy Admin</h1>
-    <p>Chirpy has been visited ${config.fileserverhits} times!</p>
+    <p>Chirpy has been visited ${config.api.fileServerHits} times!</p>
   </body>
 </html>
 `);
 }
 
 export function handlerResetMetrics(_req: Request, res: Response) {
-  config.fileserverhits = 0;
+  config.api.fileServerHits = 0;
   res.send();
 }
