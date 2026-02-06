@@ -32,8 +32,10 @@ export async function handlerUsersCreate(req: Request, res: Response) {
     throw new Error("Could not create user");
   }
 
-  const { hashed_password, ...restUser } = user;
-  const resUser: UserResponse = restUser;
-
-  return respondWithJSON(res, 201, resUser);
+  return respondWithJSON(res, 201, {
+    id: user.id,
+    email: user.email,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+  } satisfies UserResponse);
 }
