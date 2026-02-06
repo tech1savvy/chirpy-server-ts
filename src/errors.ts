@@ -3,6 +3,11 @@ export class BadRequestError extends Error {
     super(message);
   }
 }
+export class Unauthorised extends Error {
+  constructor(message: string) {
+    super(message);
+  }
+}
 export class UserNotAuthenticated extends Error {
   constructor(message: string) {
     super(message);
