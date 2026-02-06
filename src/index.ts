@@ -35,13 +35,9 @@ app.get("/api/healthz", handlerReadiness);
 
 app.get("/api/chirps", handlerChirpsRetrieve);
 app.get("/api/chirps/:chirpID", handlerChirpsRetrieveByID);
-app.post("/api/chirps", (req, res, next) => {
-  Promise.resolve(handlerChirpsCreate(req, res)).catch(next);
-});
+app.post("/api/chirps", handlerChirpsCreate);
 
-app.post("/api/users", (req, res, next) => {
-  Promise.resolve(handlerUsersCreate(req, res)).catch(next);
-});
+app.post("/api/users", handlerUsersCreate);
 
 app.use(middlewareErrorHandler);
 app.listen(config.api.port, () => {
