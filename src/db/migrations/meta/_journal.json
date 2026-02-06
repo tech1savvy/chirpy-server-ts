@@ -15,6 +15,13 @@
       "when": 1769494987768,
       "tag": "0001_ancient_quicksilver",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1770360406765,
+      "tag": "0002_flat_redwing",
+      "breakpoints": true
     }
   ]
 }
