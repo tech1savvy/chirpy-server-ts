@@ -26,8 +26,8 @@ export async function handlerChirpsCreate(req: Request, res: Response) {
 
   return respondWithJSON(res, 201, {
     id: chirp.id,
-    createAt: chirp.createdAt,
-    updatedAt: chirp.updaetdAt,
+    createdAt: chirp.createdAt,
+    updatedAt: chirp.updatedAt,
     body: chirp.body,
     userId: chirp.userId,
   });
