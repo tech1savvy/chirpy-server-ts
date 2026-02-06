@@ -1,9 +1,12 @@
 import type { Request, Response } from "express";
 import { createUser } from "../db/queries/users.js";
+import { users } from "../db/schema.js";
 import { BadRequestError } from "../errors.js";
 import { respondWithJSON } from "../utils/json.js";
 import { hashPassword } from "../utils/auth.js";
-import { NewUser } from "../db/schema.js";
+
+type User = typeof users.$inferSelect;
+type UserResponse = Omit<User, "hashed_password">;
 
 export async function handlerUsersCreate(req: Request, res: Response) {
   type parameters = {
@@ -20,7 +23,7 @@ export async function handlerUsersCreate(req: Request, res: Response) {
     throw new BadRequestError("Password not provided");
   }
 
-  const user: Omit<NewUser, "hash_password"> = await createUser({
+  const user = await createUser({
     email: params.email,
     hashed_password: await hashPassword(params.password),
   });
@@ -29,5 +32,8 @@ export async function handlerUsersCreate(req: Request, res: Response) {
     throw new Error("Could not create user");
   }
 
-  return respondWithJSON(res, 201, user);
+  const { hashed_password, ...restUser } = user;
+  const resUser: UserResponse = restUser;
+
+  return respondWithJSON(res, 201, resUser);
 }
