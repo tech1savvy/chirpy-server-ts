@@ -6,6 +6,7 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import { middlewareLogResponses } from "./middleware/logger.js";
 import { middlewareMetricsInc } from "./middleware/metrics.js";
 import { middlewareErrorHandler } from "./middleware/error.js";
+import { requireAuth } from "./middleware/auth.js";
 import { handlerReadiness } from "./api/readiness.js";
 import { handlerGetMetrics } from "./api/metrics.js";
 import {
@@ -36,7 +37,7 @@ app.get("/api/healthz", handlerReadiness);
 
 app.get("/api/chirps", handlerChirpsRetrieve);
 app.get("/api/chirps/:chirpID", handlerChirpsRetrieveByID);
-app.post("/api/chirps", handlerChirpsCreate);
+app.post("/api/chirps", requireAuth, handlerChirpsCreate);
 
 app.post("/api/users", handlerUsersCreate);
 app.post("/api/login", handlerLogin);
