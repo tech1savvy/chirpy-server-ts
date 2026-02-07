@@ -4,32 +4,38 @@ import type { Request } from "express";
 
 type payload = Pick<JwtPayload, "iss" | "sub" | "iat" | "exp">;
 
-export function makeJWT(
-  userID: string,
-  secret: string,
-  expiresIn: number,
-): string {
+const TOKEN_ISSUER = "chirpy";
+
+export function makeJWT(userID: string, secret: string, expiresIn: number) {
+  const issuedAt = Math.floor(Date.now() / 1000);
+  const expiresAt = issuedAt + expiresIn;
+
   return jwt.sign(
     {
       iss: "chirpy",
       sub: userID,
       iat: Math.floor(Date.now() / 1000),
+      exp: expiresAt,
     } satisfies payload,
     secret,
-    { expiresIn },
+    { algorithm: "HS256" },
   );
 }
 
-export function validateJWT(tokenString: string, secret: string): string {
+export function validateJWT(tokenString: string, secret: string) {
+  let decoded: payload;
   try {
-    const { sub } = jwt.verify(tokenString, secret);
-    if (!sub) {
-      throw new Unauthorised("Invalid token");
-    }
-    return sub.toString();
+    decoded = jwt.verify(tokenString, secret) as JwtPayload;
   } catch (err) {
     throw new Unauthorised("Invalid token");
   }
+  if (decoded.iss !== TOKEN_ISSUER) {
+    throw new Unauthorised("Invalid token");
+  }
+  if (!decoded.sub) {
+    throw new Unauthorised("Invalid token");
+  }
+  return decoded.sub;
 }
 
 export function getBearerToken(req: Request): string {
