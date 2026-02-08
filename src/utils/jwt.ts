@@ -1,10 +1,9 @@
-import jwt, { JwtPayload, TokenExpiredError } from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { BadRequestError, Unauthorised } from "../errors.js";
 import type { Request } from "express";
+import { config } from "../config.js";
 
 type payload = Pick<JwtPayload, "iss" | "sub" | "iat" | "exp">;
-
-const TOKEN_ISSUER = "chirpy";
 
 export function makeJWT(userID: string, secret: string, expiresIn: number) {
   const issuedAt = Math.floor(Date.now() / 1000);
@@ -29,7 +28,7 @@ export function validateJWT(tokenString: string, secret: string) {
   } catch (err) {
     throw new Unauthorised("Invalid token");
   }
-  if (decoded.iss !== TOKEN_ISSUER) {
+  if (decoded.iss !== config.jwt.secret) {
     throw new Unauthorised("Invalid issuer");
   }
   if (!decoded.sub) {

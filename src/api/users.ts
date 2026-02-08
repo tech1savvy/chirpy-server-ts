@@ -6,7 +6,7 @@ import { respondWithJSON } from "../utils/json.js";
 import { hashPassword } from "../utils/auth.js";
 
 type User = typeof users.$inferSelect;
-type UserResponse = Omit<User, "hashed_password">;
+export type UserResponse = Omit<User, "hashed_password">;
 
 export async function handlerUsersCreate(req: Request, res: Response) {
   type parameters = {
