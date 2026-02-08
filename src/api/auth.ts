@@ -1,21 +1,22 @@
 import type { Request, Response } from "express";
 import { getUserByEmail } from "../db/queries/users.js";
 import { BadRequestError, Unauthorised } from "../errors.js";
-import { checkPasswordHash } from "../utils/auth.js";
+import { checkPasswordHash, makeRefreshToken } from "../utils/auth.js";
 import { respondWithJSON } from "../utils/json.js";
 import { UserResponse } from "./users.js";
 import { makeJWT } from "../utils/jwt.js";
 import { config } from "../config.js";
+import { createRefreshToken } from "src/db/queries/refresh-token.js";
 
 type LoginResponse = UserResponse & {
   accessToken: string;
+  refreshToken: string;
 };
 
 export async function handlerLogin(req: Request, res: Response) {
   type parameters = {
     email: string;
     password: string;
-    expiresIn?: number;
   };
 
   const params: parameters = req.body;
@@ -25,9 +26,6 @@ export async function handlerLogin(req: Request, res: Response) {
   }
   if (!params.password) {
     throw new BadRequestError("Password not provided");
-  }
-  if (!params.expiresIn || params.expiresIn > 1 * 60 * 60) {
-    params.expiresIn = 1 * 60 * 60;
   }
 
   // Fetch User
@@ -45,13 +43,26 @@ export async function handlerLogin(req: Request, res: Response) {
     throw new Unauthorised("incorrect email or password");
   }
 
-  // Make JWT
-  let duration = config.jwt.defautlDuration;
-  if (params.expiresIn && !(params.expiresIn > config.jwt.defautlDuration)) {
-    duration = params.expiresIn;
-  }
+  // Make Access Token
+  const accessToken = makeJWT(
+    user.id,
+    config.jwt.secret,
+    config.jwt.defautlDuration,
+  );
 
-  const accessToken = makeJWT(user.id, config.jwt.secret, duration);
+  // Make Refresh Token
+  const refreshToken = makeRefreshToken();
+  const currentDate = new Date();
+  const currentDay = currentDate.getDate();
+  const targetDay = currentDay + 60;
+  const targetDate = new Date(currentDate.setDate(targetDay));
+
+  // Save Refersh Token
+  createRefreshToken({
+    userId: user.id,
+    token: refreshToken,
+    expiresAt: targetDate,
+  });
 
   const { hashed_password, ...restUser } = user;
   const resUser: UserResponse = restUser;
@@ -59,5 +70,6 @@ export async function handlerLogin(req: Request, res: Response) {
   return respondWithJSON(res, 200, {
     ...resUser,
     accessToken,
+    refreshToken,
   } satisfies LoginResponse);
 }
