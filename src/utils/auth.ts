@@ -5,5 +5,9 @@ export async function hashPassword(password: string) {
 }
 
 export async function checkPasswordHash(password: string, hash: string) {
-  return argon2.verify(hash, password);
+  try {
+    return await argon2.verify(hash, password);
+  } catch {
+    return false;
+  }
 }
