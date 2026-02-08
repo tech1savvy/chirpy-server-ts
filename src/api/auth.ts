@@ -4,9 +4,13 @@ import { BadRequestError, Unauthorised } from "../errors.js";
 import { checkPasswordHash, makeRefreshToken } from "../utils/auth.js";
 import { respondWithJSON } from "../utils/json.js";
 import { UserResponse } from "./users.js";
-import { makeJWT } from "../utils/jwt.js";
+import { makeJWT, getBearerToken } from "../utils/jwt.js";
 import { config } from "../config.js";
-import { createRefreshToken } from "src/db/queries/refresh-token.js";
+import {
+  createRefreshToken,
+  revokeRefreshToken,
+} from "../db/queries/refresh-token.js";
+import { getUserFromRefreshToken } from "../db/queries/refresh-token.js";
 
 type LoginResponse = UserResponse & {
   accessToken: string;
@@ -72,4 +76,42 @@ export async function handlerLogin(req: Request, res: Response) {
     accessToken,
     refreshToken,
   } satisfies LoginResponse);
+}
+
+type RefreshResponse = {
+  accessToken: string;
+};
+
+export async function handlerRefreshAccessToken(req: Request, res: Response) {
+  const token = getBearerToken(req);
+  const user = await getUserFromRefreshToken(token);
+  if (!user) {
+    throw new Unauthorised("Invalid refresh token");
+  }
+  if (!(user.expiresAt < new Date())) {
+    throw new Unauthorised("Expired refresh token");
+  }
+  if (user.revoked_at) {
+    throw new Unauthorised("Revoked refresh token");
+  }
+
+  const accessToken = makeJWT(
+    user.userId,
+    config.jwt.secret,
+    config.jwt.defautlDuration,
+  );
+
+  return respondWithJSON(res, 200, { accessToken } satisfies RefreshResponse);
+}
+
+export async function handlerRevokeRefreshToken(req: Request, res: Response) {
+  const token = getBearerToken(req);
+  const user = await getUserFromRefreshToken(token);
+  if (!user) {
+    throw new Unauthorised("Invalid refresh token");
+  }
+
+  await revokeRefreshToken(token);
+
+  return res.status(204);
 }
