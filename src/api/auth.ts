@@ -8,7 +8,7 @@ import { makeJWT } from "../utils/jwt.js";
 import { config } from "../config.js";
 
 type LoginResponse = UserResponse & {
-  token: string;
+  accessToken: string;
 };
 
 export async function handlerLogin(req: Request, res: Response) {
@@ -51,13 +51,13 @@ export async function handlerLogin(req: Request, res: Response) {
     duration = params.expiresIn;
   }
 
-  const token = makeJWT(user.id, config.jwt.secret, duration);
+  const accessToken = makeJWT(user.id, config.jwt.secret, duration);
 
   const { hashed_password, ...restUser } = user;
   const resUser: UserResponse = restUser;
 
   return respondWithJSON(res, 200, {
     ...resUser,
-    token,
+    accessToken,
   } satisfies LoginResponse);
 }
