@@ -30,10 +30,10 @@ export function validateJWT(tokenString: string, secret: string) {
     throw new Unauthorised("Invalid token");
   }
   if (decoded.iss !== TOKEN_ISSUER) {
-    throw new Unauthorised("Invalid token");
+    throw new Unauthorised("Invalid issuer");
   }
   if (!decoded.sub) {
-    throw new Unauthorised("Invalid token");
+    throw new Unauthorised("No user ID in token");
   }
   return decoded.sub;
 }
