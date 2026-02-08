@@ -28,7 +28,7 @@ export function validateJWT(tokenString: string, secret: string) {
   } catch (err) {
     throw new Unauthorised("Invalid token");
   }
-  if (decoded.iss !== config.jwt.secret) {
+  if (decoded.iss !== config.jwt.issuer) {
     throw new Unauthorised("Invalid issuer");
   }
   if (!decoded.sub) {
