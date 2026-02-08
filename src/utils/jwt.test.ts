@@ -19,15 +19,20 @@ describe("JWT Utils", () => {
     const result = validateJWT(token, secret);
     expect(result).toBe(userId);
   });
-  it("should reject for expired token", () => {
+  it("should throw an error for expired token", () => {
     vi.advanceTimersByTime((expiresIn + 5) * 1000);
 
-    expect(() => validateJWT(token, secret)).toThrowError(Unauthorised);
+    expect(() => validateJWT(token, secret)).toThrow(Unauthorised);
 
     vi.useRealTimers();
   });
-  it("should reject for wrong secret", () => {
-    expect(() => validateJWT(token, "wrong-secret")).toThrowError(Unauthorised);
+  it("should throw an error for wrong secret", () => {
+    expect(() => validateJWT(token, "wrong-secret")).toThrow(Unauthorised);
+  });
+  it("should throw an error for a invalid token string", () => {
+    expect(() => validateJWT("invalid-token-string", secret)).toThrow(
+      Unauthorised,
+    );
   });
 });
 
