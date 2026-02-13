@@ -1,4 +1,5 @@
 import argon2 from "argon2";
+import { randomBytes } from "node:crypto";
 
 export async function hashPassword(password: string) {
   return argon2.hash(password);
@@ -10,4 +11,8 @@ export async function checkPasswordHash(password: string, hash: string) {
   } catch {
     return false;
   }
+}
+
+export function makeRefreshToken() {
+  return randomBytes(32).toString("hex");
 }
