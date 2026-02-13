@@ -56,10 +56,7 @@ export async function handlerLogin(req: Request, res: Response) {
 
   // Make Refresh Token
   const refreshToken = makeRefreshToken();
-  const currentDate = new Date();
-  const currentDay = currentDate.getDate();
-  const targetDay = currentDay + 60;
-  const targetDate = new Date(currentDate.setDate(targetDay));
+  const targetDate = new Date(Date.now() + 60 * 24 * 60 * 60 * 1000);
 
   // Save Refersh Token
   createRefreshToken({
