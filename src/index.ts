@@ -11,6 +11,7 @@ import { handlerReadiness } from "./api/readiness.js";
 import { handlerGetMetrics } from "./api/metrics.js";
 import {
   handlerChirpsCreate,
+  handlerChirpsDeleteByID,
   handlerChirpsRetrieve,
   handlerChirpsRetrieveByID,
 } from "./api/chirps.js";
@@ -43,8 +44,9 @@ app.post("/admin/reset", handlerReset);
 app.get("/api/healthz", handlerReadiness);
 
 app.get("/api/chirps", handlerChirpsRetrieve);
-app.get("/api/chirps/:chirpID", handlerChirpsRetrieveByID);
 app.post("/api/chirps", requireAuth, handlerChirpsCreate);
+app.get("/api/chirps/:chirpID", handlerChirpsRetrieveByID);
+app.delete("/api/chirps/:chirpID", requireAuth, handlerChirpsDeleteByID);
 
 app.post("/api/users", handlerUsersCreate);
 app.put("/api/users", requireAuth, handlerUsersUpdate);

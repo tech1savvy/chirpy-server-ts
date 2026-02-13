@@ -1,6 +1,15 @@
 import type { Request, Response } from "express";
-import { BadRequestError, NotFoundError } from "../errors.js";
-import { createChirp, getChirp, getChirpByID } from "../db/queries/chirps.js";
+import {
+  BadRequestError,
+  NotFoundError,
+  UserForbiddenError,
+} from "../errors.js";
+import {
+  createChirp,
+  getChirp,
+  getChirpByID,
+  removeChirpByID,
+} from "../db/queries/chirps.js";
 import { respondWithJSON } from "../utils/json.js";
 
 export async function handlerChirpsCreate(req: Request, res: Response) {
@@ -70,4 +79,32 @@ export async function handlerChirpsRetrieveByID(req: Request, res: Response) {
   }
 
   respondWithJSON(res, 200, chirp);
+}
+
+export async function handlerChirpsDeleteByID(req: Request, res: Response) {
+  const { chirpID } = req.params;
+  if (typeof chirpID !== "string") {
+    throw new BadRequestError("chirpID not not provided");
+  }
+  const chirp = await getChirpByID(chirpID);
+  if (!chirp) {
+    throw new NotFoundError(`Chirp with id: ${chirpID} not found`);
+  }
+
+  if (!req.userId) {
+    throw new BadRequestError("User ID missing from request");
+  }
+
+  if (chirp.userId !== req.userId) {
+    throw new UserForbiddenError(
+      `Chirp with id: ${chirpID} does not belong to ${req.userId}`,
+    );
+  }
+
+  const deleted = await removeChirpByID(chirpID);
+  if (!deleted) {
+    throw new Error(`Failed to delete chirp wth id:${chirpID}`);
+  }
+
+  return respondWithJSON(res, 204, {});
 }
