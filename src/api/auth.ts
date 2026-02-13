@@ -56,7 +56,7 @@ export async function handlerLogin(req: Request, res: Response) {
 
   // Make Refresh Token
   const refreshToken = makeRefreshToken();
-  const targetDate = new Date(Date.now() + 60 * 24 * 60 * 60 * 1000);
+  const targetDate = new Date(Date.now() + config.jwt.refreshDuration);
 
   // Save Refersh Token
   createRefreshToken({
