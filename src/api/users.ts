@@ -6,7 +6,7 @@ import { respondWithError, respondWithJSON } from "../utils/json.js";
 import { hashPassword } from "../utils/auth.js";
 
 type User = typeof users.$inferSelect;
-export type UserResponse = Omit<User, "hashed_password">;
+export type UserResponse = Omit<User, "hashedPassword">;
 
 export async function handlerUsersCreate(req: Request, res: Response) {
   type parameters = {
@@ -25,7 +25,7 @@ export async function handlerUsersCreate(req: Request, res: Response) {
 
   const user = await createUser({
     email: params.email,
-    hashed_password: await hashPassword(params.password),
+    hashedPassword: await hashPassword(params.password),
   });
 
   if (!user) {
@@ -62,7 +62,7 @@ export async function handlerUsersUpdate(req: Request, res: Response) {
   const hashedPassword = await hashPassword(body.password);
   const user = await updateUser(req.userId, {
     email: body.email,
-    hashed_password: hashedPassword,
+    hashedPassword,
   });
 
   return respondWithJSON(res, 200, {

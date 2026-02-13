@@ -41,7 +41,7 @@ export async function handlerLogin(req: Request, res: Response) {
   // Match Password Hash
   const isAuthentic = await checkPasswordHash(
     params.password,
-    user.hashed_password,
+    user.hashedPassword,
   );
   if (!isAuthentic) {
     throw new Unauthorised("incorrect email or password");
@@ -65,7 +65,7 @@ export async function handlerLogin(req: Request, res: Response) {
     expiresAt: targetDate,
   });
 
-  const { hashed_password, ...restUser } = user;
+  const { hashedPassword: hashed_password, ...restUser } = user;
   const resUser: UserResponse = restUser;
 
   return respondWithJSON(res, 200, {

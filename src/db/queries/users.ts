@@ -25,7 +25,7 @@ export async function getUserByEmail(email: string) {
 
 export async function updateUser(
   userId: string,
-  data: Partial<Pick<User, "email" | "hashed_password">>,
+  data: Partial<Pick<User, "email" | "hashedPassword">>,
 ) {
   const [row] = await db
     .update(users)
