@@ -6,14 +6,13 @@ import { respondWithJSON } from "../utils/json.js";
 export async function handlerChirpsCreate(req: Request, res: Response) {
   type parameters = {
     body: string;
-    userId: string;
   };
 
   const params: parameters = req.body;
   if (!params.body) {
     throw new BadRequestError("Body is missing");
   }
-  if (!params.userId) {
+  if (!req.userId) {
     throw new BadRequestError("User ID is missing");
   }
 
@@ -21,7 +20,7 @@ export async function handlerChirpsCreate(req: Request, res: Response) {
 
   const chirp = await createChirp({
     body: cleanBody,
-    userId: params.userId,
+    userId: req.userId,
   });
 
   return respondWithJSON(res, 201, {

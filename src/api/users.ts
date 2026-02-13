@@ -54,8 +54,13 @@ export async function handlerUsersUpdate(req: Request, res: Response) {
   if (!body.password) {
     throw new BadRequestError("No new password or email provided");
   }
+
+  if (!req.userId) {
+    throw new Error("User ID missing from request");
+  }
+
   const hashedPassword = await hashPassword(body.password);
-  const user = await updateUser(req.body.userId, {
+  const user = await updateUser(req.userId, {
     email: body.email,
     hashed_password: hashedPassword,
   });
