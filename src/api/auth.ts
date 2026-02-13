@@ -85,7 +85,7 @@ export async function handlerRefreshAccessToken(req: Request, res: Response) {
   if (!user) {
     throw new Unauthorised("Invalid refresh token");
   }
-  if (!(user.expiresAt < new Date())) {
+  if (user.expiresAt <= new Date()) {
     throw new Unauthorised("Expired refresh token");
   }
   if (user.revoked_at) {
