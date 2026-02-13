@@ -98,7 +98,9 @@ export async function handlerRefreshAccessToken(req: Request, res: Response) {
     config.jwt.defautlDuration,
   );
 
-  return respondWithJSON(res, 200, { accessToken } satisfies RefreshResponse);
+  return respondWithJSON(res, 200, {
+    token: accessToken,
+  } satisfies RefreshResponse);
 }
 
 export async function handlerRevokeRefreshToken(req: Request, res: Response) {
@@ -110,5 +112,5 @@ export async function handlerRevokeRefreshToken(req: Request, res: Response) {
 
   await revokeRefreshToken(token);
 
-  return res.status(204);
+  return res.status(204).send();
 }
