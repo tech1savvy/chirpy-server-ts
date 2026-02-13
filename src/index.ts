@@ -15,7 +15,10 @@ import {
   handlerChirpsRetrieveByID,
 } from "./api/chirps.js";
 import { handlerReset } from "./api/reset.js";
-import { handlerUsersCreate as handlerUsersCreate } from "./api/users.js";
+import {
+  handlerUsersCreate as handlerUsersCreate,
+  handlerUsersUpdate,
+} from "./api/users.js";
 
 import { config } from "./config.js";
 import {
@@ -44,6 +47,7 @@ app.get("/api/chirps/:chirpID", handlerChirpsRetrieveByID);
 app.post("/api/chirps", requireAuth, handlerChirpsCreate);
 
 app.post("/api/users", handlerUsersCreate);
+app.put("/api/users", requireAuth, handlerUsersUpdate);
 app.post("/api/login", handlerLogin);
 app.post("/api/refresh", handlerRefreshAccessToken);
 app.post("/api/revoke", handlerRevokeRefreshToken);

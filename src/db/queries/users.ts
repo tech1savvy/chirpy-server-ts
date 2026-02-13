@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { db } from "../index.js";
-import { NewUser, users } from "../schema.js";
+import { NewUser, User, users } from "../schema.js";
 
 export async function createUser(user: NewUser) {
   const [result] = await db
@@ -21,4 +21,16 @@ export async function getUserByEmail(email: string) {
     return;
   }
   return rows[0];
+}
+
+export async function updateUser(
+  userId: string,
+  data: Partial<Pick<User, "email" | "hashed_password">>,
+) {
+  const [row] = await db
+    .update(users)
+    .set(data)
+    .where(eq(users.id, userId))
+    .returning();
+  return row;
 }
