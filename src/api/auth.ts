@@ -13,7 +13,7 @@ import {
 import { getUserFromRefreshToken } from "../db/queries/refresh-token.js";
 
 type LoginResponse = UserResponse & {
-  accessToken: string;
+  token: string;
   refreshToken: string;
 };
 
@@ -73,13 +73,13 @@ export async function handlerLogin(req: Request, res: Response) {
 
   return respondWithJSON(res, 200, {
     ...resUser,
-    accessToken,
+    token: accessToken,
     refreshToken,
   } satisfies LoginResponse);
 }
 
 type RefreshResponse = {
-  accessToken: string;
+  token: string;
 };
 
 export async function handlerRefreshAccessToken(req: Request, res: Response) {
