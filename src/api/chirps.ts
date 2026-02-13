@@ -61,8 +61,11 @@ export async function handlerChirpsRetrieve(_req: Request, res: Response) {
 
 export async function handlerChirpsRetrieveByID(req: Request, res: Response) {
   const { chirpID } = req.params;
+  if (typeof chirpID !== "string") {
+    throw new BadRequestError("chirpID not provided");
+  }
 
-  const chirp = await getChirpByID(chirpID as string);
+  const chirp = await getChirpByID(chirpID);
   if (!chirp) {
     throw new NotFoundError(`Chirp with id: ${chirpID} not found`);
   }
