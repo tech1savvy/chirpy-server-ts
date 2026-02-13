@@ -28,6 +28,8 @@ import {
   handlerRevokeRefreshToken,
 } from "./api/auth.js";
 
+import { handlerUsersUpgrade } from "./api/webhooks.js";
+
 const migrationClient = postgres(config.db.url, { max: 1 });
 await migrate(drizzle(migrationClient), config.db.migrationConfig);
 
@@ -53,6 +55,8 @@ app.put("/api/users", requireAuth, handlerUsersUpdate);
 app.post("/api/login", handlerLogin);
 app.post("/api/refresh", handlerRefreshAccessToken);
 app.post("/api/revoke", handlerRevokeRefreshToken);
+
+app.post("/api/polka/webhooks", handlerUsersUpgrade);
 
 app.use(middlewareErrorHandler);
 app.listen(config.api.port, () => {

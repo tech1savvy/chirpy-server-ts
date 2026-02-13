@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
-import { createUser, updateUser } from "../db/queries/users.js";
+import { createUser, updateUser, upgradeUser } from "../db/queries/users.js";
 import { users } from "../db/schema.js";
-import { BadRequestError } from "../errors.js";
+import { BadRequestError, NotFoundError } from "../errors.js";
 import { respondWithError, respondWithJSON } from "../utils/json.js";
 import { hashPassword } from "../utils/auth.js";
 
@@ -37,6 +37,7 @@ export async function handlerUsersCreate(req: Request, res: Response) {
     email: user.email,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
+    isChirpyRed: user.isChirpyRed,
   } satisfies UserResponse);
 }
 
@@ -70,5 +71,6 @@ export async function handlerUsersUpdate(req: Request, res: Response) {
     email: user.email,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
+    isChirpyRed: user.isChirpyRed,
   } satisfies UserResponse);
 }

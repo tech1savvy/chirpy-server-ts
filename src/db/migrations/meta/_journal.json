@@ -43,6 +43,13 @@
       "when": 1770531071428,
       "tag": "0005_opposite_james_howlett",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1770975726939,
+      "tag": "0006_next_talos",
+      "breakpoints": true
     }
   ]
 }
