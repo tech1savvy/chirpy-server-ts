@@ -11,6 +11,7 @@ import {
   removeChirpByID,
 } from "../db/queries/chirps.js";
 import { respondWithJSON } from "../utils/json.js";
+import { chirps } from "src/db/schema.js";
 
 export async function handlerChirpsCreate(req: Request, res: Response) {
   type parameters = {
@@ -69,6 +70,18 @@ export async function handlerChirpsRetrieve(req: Request, res: Response) {
   }
 
   const chirps = await getChirp(authorId);
+
+  let sortDirection = "asc";
+  if (req.query.sort && typeof req.query.sort === "string") {
+    sortDirection = req.query.sort;
+  }
+
+  chirps.sort((a, b) =>
+    sortDirection == "asc"
+      ? a.createdAt.getTime() - b.createdAt.getTime()
+      : b.createdAt.getTime() - a.createdAt.getTime(),
+  );
+
   return respondWithJSON(res, 200, chirps);
 }
 
