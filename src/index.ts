@@ -47,8 +47,8 @@ app.get("/api/healthz", handlerReadiness);
 
 app.get("/api/chirps", handlerChirpsRetrieve);
 app.post("/api/chirps", requireAuth, handlerChirpsCreate);
-app.get("/api/chirps/:chirpID", handlerChirpsRetrieveByID);
-app.delete("/api/chirps/:chirpID", requireAuth, handlerChirpsDeleteByID);
+app.get("/api/chirps/:chirpId", handlerChirpsRetrieveByID);
+app.delete("/api/chirps/:chirpId", requireAuth, handlerChirpsDeleteByID);
 
 app.post("/api/users", handlerUsersCreate);
 app.put("/api/users", requireAuth, handlerUsersUpdate);

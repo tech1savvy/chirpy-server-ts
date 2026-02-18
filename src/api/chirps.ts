@@ -68,27 +68,27 @@ export async function handlerChirpsRetrieve(_req: Request, res: Response) {
 }
 
 export async function handlerChirpsRetrieveByID(req: Request, res: Response) {
-  const { chirpID } = req.params;
-  if (typeof chirpID !== "string") {
-    throw new BadRequestError("chirpID not provided");
+  const { chirpId } = req.params;
+  if (typeof chirpId !== "string") {
+    throw new BadRequestError("chirpId not provided");
   }
 
-  const chirp = await getChirpByID(chirpID);
+  const chirp = await getChirpByID(chirpId);
   if (!chirp) {
-    throw new NotFoundError(`Chirp with id: ${chirpID} not found`);
+    throw new NotFoundError(`Chirp with id: ${chirpId} not found`);
   }
 
   respondWithJSON(res, 200, chirp);
 }
 
 export async function handlerChirpsDeleteByID(req: Request, res: Response) {
-  const { chirpID } = req.params;
-  if (typeof chirpID !== "string") {
-    throw new BadRequestError("chirpID not not provided");
+  const { chirpId } = req.params;
+  if (typeof chirpId !== "string") {
+    throw new BadRequestError("chirpId not not provided");
   }
-  const chirp = await getChirpByID(chirpID);
+  const chirp = await getChirpByID(chirpId);
   if (!chirp) {
-    throw new NotFoundError(`Chirp with id: ${chirpID} not found`);
+    throw new NotFoundError(`Chirp with id: ${chirpId} not found`);
   }
 
   if (!req.userId) {
@@ -97,13 +97,13 @@ export async function handlerChirpsDeleteByID(req: Request, res: Response) {
 
   if (chirp.userId !== req.userId) {
     throw new UserForbiddenError(
-      `Chirp with id: ${chirpID} does not belong to ${req.userId}`,
+      `Chirp with id: ${chirpId} does not belong to ${req.userId}`,
     );
   }
 
-  const deleted = await removeChirpByID(chirpID);
+  const deleted = await removeChirpByID(chirpId);
   if (!deleted) {
-    throw new Error(`Failed to delete chirp wth id:${chirpID}`);
+    throw new Error(`Failed to delete chirp wth id:${chirpId}`);
   }
 
   return respondWithJSON(res, 204, {});
